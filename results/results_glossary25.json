@@ -1,0 +1,819 @@
+{
+  "primary": "gemini-3.1-flash-lite",
+  "fallback": "gemini-flash-lite-latest",
+  "scores_per_run": [
+    25,
+    25,
+    25
+  ],
+  "results": [
+    {
+      "id": 1,
+      "difficulty": "easy",
+      "passed": true,
+      "model_used": "gemini-3.1-flash-lite",
+      "sql": "SELECT count(*) FROM Customer",
+      "error": null
+    },
+    {
+      "id": 2,
+      "difficulty": "easy",
+      "passed": true,
+      "model_used": "gemini-3.1-flash-lite",
+      "sql": "SELECT count(*) FROM Track T JOIN Genre G ON T.GenreId = G.GenreId WHERE G.Name = 'Rock'",
+      "error": null
+    },
+    {
+      "id": 3,
+      "difficulty": "easy",
+      "passed": true,
+      "model_used": "gemini-3.1-flash-lite",
+      "sql": "SELECT ROUND(SUM(Total), 2) FROM Invoice",
+      "error": null
+    },
+    {
+      "id": 4,
+      "difficulty": "medium",
+      "passed": true,
+      "model_used": "gemini-3.1-flash-lite",
+      "sql": "SELECT BillingCountry, ROUND(SUM(Total), 2) AS TotalRevenue FROM Invoice GROUP BY BillingCountry ORDER BY TotalRevenue DESC LIMIT 5",
+      "error": null
+    },
+    {
+      "id": 5,
+      "difficulty": "medium",
+      "passed": true,
+      "model_used": "gemini-3.1-flash-lite",
+      "sql": "SELECT T2.Name, COUNT(T1.AlbumId) AS AlbumCount FROM Album AS T1 JOIN Artist AS T2 ON T1.ArtistId = T2.ArtistId GROUP BY T2.Name ORDER BY AlbumCount DESC LIMIT 3",
+      "error": null
+    },
+    {
+      "id": 6,
+      "difficulty": "medium",
+      "passed": true,
+      "model_used": "gemini-3.1-flash-lite",
+      "sql": "SELECT g.Name, ROUND(SUM(il.UnitPrice * il.Quantity), 2) AS TotalRevenue FROM Genre g JOIN Track t ON g.GenreId = t.GenreId JOIN InvoiceLine il ON t.TrackId = il.TrackId GROUP BY g.Name ORDER BY TotalRevenue DESC LIMIT 5",
+      "error": null
+    },
+    {
+      "id": 7,
+      "difficulty": "medium",
+      "passed": true,
+      "model_used": "gemini-3.1-flash-lite",
+      "sql": "SELECT date_part('year', InvoiceDate) AS Year, COUNT(InvoiceId) AS InvoiceCount FROM Invoice GROUP BY Year ORDER BY Year",
+      "error": null
+    },
+    {
+      "id": 8,
+      "difficulty": "medium",
+      "passed": true,
+      "model_used": "gemini-3.1-flash-lite",
+      "sql": "SELECT BillingCountry, ROUND(AVG(Total), 2) AS AverageTotal FROM Invoice GROUP BY BillingCountry HAVING COUNT(InvoiceId) >= 5",
+      "error": null
+    },
+    {
+      "id": 9,
+      "difficulty": "hard",
+      "passed": true,
+      "model_used": "gemini-3.1-flash-lite",
+      "sql": "WITH CustomerSpending AS (\n    SELECT \n        c.Country, \n        c.FirstName || ' ' || c.LastName AS FullName, \n        ROUND(SUM(i.Total), 2) AS TotalSpent\n    FROM Customer c\n    JOIN Invoice i ON c.CustomerId = i.CustomerId\n    GROUP BY c.Country, FullName\n),\nRankedSpending AS (\n    SELECT \n        Country, \n        FullName, \n        TotalSpent,\n        RANK() OVER (PARTITION BY Country ORDER BY TotalSpent DESC) as rnk\n    FROM CustomerSpending\n)\nSELECT Country, FullName, TotalSpent\nFROM RankedSpending\nWHERE rnk = 1",
+      "error": null
+    },
+    {
+      "id": 10,
+      "difficulty": "hard",
+      "passed": true,
+      "model_used": "gemini-3.1-flash-lite",
+      "sql": "SELECT Name FROM Artist WHERE ArtistId NOT IN (SELECT DISTINCT Album.ArtistId FROM Album JOIN Track ON Album.AlbumId = Track.AlbumId JOIN InvoiceLine ON Track.TrackId = InvoiceLine.TrackId)",
+      "error": null
+    },
+    {
+      "id": 11,
+      "difficulty": "easy",
+      "passed": true,
+      "model_used": "gemini-3.1-flash-lite",
+      "sql": "SELECT count(*) FROM Invoice WHERE date_part('year', InvoiceDate) = 2012",
+      "error": null
+    },
+    {
+      "id": 12,
+      "difficulty": "easy",
+      "passed": true,
+      "model_used": "gemini-3.1-flash-lite",
+      "sql": "SELECT ROUND(AVG(Milliseconds) / 60000, 2) FROM Track",
+      "error": null
+    },
+    {
+      "id": 13,
+      "difficulty": "easy",
+      "passed": true,
+      "model_used": "gemini-3.1-flash-lite",
+      "sql": "SELECT Country, COUNT(CustomerId) FROM Customer GROUP BY Country",
+      "error": null
+    },
+    {
+      "id": 14,
+      "difficulty": "medium",
+      "passed": true,
+      "model_used": "gemini-3.1-flash-lite",
+      "sql": "SELECT month(InvoiceDate) AS Month, ROUND(SUM(Total), 2) AS Revenue FROM Invoice WHERE year(InvoiceDate) = 2012 GROUP BY Month ORDER BY Month",
+      "error": null
+    },
+    {
+      "id": 15,
+      "difficulty": "medium",
+      "passed": true,
+      "model_used": "gemini-3.1-flash-lite",
+      "sql": "SELECT ROUND(100.0 * SUM(CASE WHEN BillingCountry = 'USA' THEN Total ELSE 0 END) / SUM(Total), 2) FROM Invoice",
+      "error": null
+    },
+    {
+      "id": 16,
+      "difficulty": "medium",
+      "passed": true,
+      "model_used": "gemini-3.1-flash-lite",
+      "sql": "SELECT COUNT(*) FROM Track WHERE TrackId NOT IN (SELECT DISTINCT TrackId FROM InvoiceLine)",
+      "error": null
+    },
+    {
+      "id": 17,
+      "difficulty": "hard",
+      "passed": true,
+      "model_used": "gemini-3.1-flash-lite",
+      "sql": "SELECT FirstName || ' ' || LastName AS FullName, ROUND(SUM(Total), 2) AS TotalSpent FROM Customer JOIN Invoice ON Customer.CustomerId = Invoice.CustomerId GROUP BY FullName HAVING TotalSpent > (SELECT AVG(CustomerTotal) FROM (SELECT SUM(Total) AS CustomerTotal FROM Invoice GROUP BY CustomerId)) ORDER BY TotalSpent DESC",
+      "error": null
+    },
+    {
+      "id": 18,
+      "difficulty": "medium",
+      "passed": true,
+      "model_used": "gemini-3.1-flash-lite",
+      "sql": "SELECT count(*) FROM (SELECT CustomerId FROM Invoice GROUP BY CustomerId HAVING count(InvoiceId) > 6) AS sub",
+      "error": null
+    },
+    {
+      "id": 19,
+      "difficulty": "medium",
+      "passed": true,
+      "model_used": "gemini-3.1-flash-lite",
+      "sql": "SELECT G.Name, ROUND(AVG(T.Milliseconds) / 60000, 2) AS AverageLengthMinutes FROM Genre G JOIN Track T ON G.GenreId = T.GenreId GROUP BY G.Name ORDER BY AverageLengthMinutes DESC LIMIT 1",
+      "error": null
+    },
+    {
+      "id": 20,
+      "difficulty": "hard",
+      "passed": true,
+      "model_used": "gemini-3.1-flash-lite",
+      "sql": "SELECT FirstName || ' ' || LastName AS FullName, COUNT(DISTINCT T.GenreId) AS GenreCount FROM Customer C JOIN Invoice I ON C.CustomerId = I.CustomerId JOIN InvoiceLine IL ON I.InvoiceId = IL.InvoiceId JOIN Track T ON IL.TrackId = T.TrackId GROUP BY FullName HAVING GenreCount > 5",
+      "error": null
+    },
+    {
+      "id": 21,
+      "difficulty": "hard",
+      "passed": true,
+      "model_used": "gemini-3.1-flash-lite",
+      "sql": "WITH MonthlyRevenue AS (\n    SELECT \n        EXTRACT(MONTH FROM InvoiceDate) AS Month,\n        ROUND(SUM(Total), 2) AS Revenue\n    FROM Invoice\n    WHERE EXTRACT(YEAR FROM InvoiceDate) = 2011\n    GROUP BY 1\n),\nRevenueWithLag AS (\n    SELECT \n        Month,\n        Revenue,\n        LAG(Revenue) OVER (ORDER BY Month) AS PrevRevenue\n    FROM MonthlyRevenue\n)\nSELECT \n    Month,\n    Revenue,\n    ROUND(Revenue - PrevRevenue, 2) AS Change\nFROM RevenueWithLag\nWHERE Month BETWEEN 2 AND 12\nORDER BY Month",
+      "error": null
+    },
+    {
+      "id": 22,
+      "difficulty": "hard",
+      "passed": true,
+      "model_used": "gemini-3.1-flash-lite",
+      "sql": "SELECT T3.Name, COUNT(DISTINCT T1.GenreId) AS GenreCount FROM Track AS T1 JOIN Album AS T2 ON T1.AlbumId = T2.AlbumId JOIN Artist AS T3 ON T2.ArtistId = T3.ArtistId GROUP BY T3.Name HAVING COUNT(DISTINCT T1.GenreId) >= 3",
+      "error": null
+    },
+    {
+      "id": 23,
+      "difficulty": "medium",
+      "passed": true,
+      "model_used": "gemini-3.1-flash-lite",
+      "sql": "SELECT g.Name, ROUND(SUM(il.UnitPrice * il.Quantity) * 100.0 / (SELECT SUM(UnitPrice * Quantity) FROM InvoiceLine), 2) AS Percentage FROM Genre g JOIN Track t ON g.GenreId = t.GenreId JOIN InvoiceLine il ON t.TrackId = il.TrackId GROUP BY g.Name",
+      "error": null
+    },
+    {
+      "id": 24,
+      "difficulty": "hard",
+      "passed": true,
+      "model_used": "gemini-3.1-flash-lite",
+      "sql": "SELECT FirstName || ' ' || LastName FROM Customer WHERE CustomerId NOT IN (SELECT T1.CustomerId FROM Invoice AS T1 JOIN InvoiceLine AS T2 ON T1.InvoiceId = T2.InvoiceId JOIN Track AS T3 ON T2.TrackId = T3.TrackId JOIN Genre AS T4 ON T3.GenreId = T4.GenreId WHERE T4.Name = 'Latin')",
+      "error": null
+    },
+    {
+      "id": 25,
+      "difficulty": "hard",
+      "passed": true,
+      "model_used": "gemini-3.1-flash-lite",
+      "sql": "SELECT FirstName || ' ' || LastName AS FullName, InvoiceDate, Total FROM Customer JOIN (SELECT CustomerId, InvoiceDate, Total, RANK() OVER (PARTITION BY CustomerId ORDER BY InvoiceDate DESC) as rnk FROM Invoice) AS LatestInvoices ON Customer.CustomerId = LatestInvoices.CustomerId WHERE rnk = 1",
+      "error": null
+    }
+  ],
+  "all_runs": [
+    [
+      {
+        "id": 1,
+        "difficulty": "easy",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT count(*) FROM Customer",
+        "error": null
+      },
+      {
+        "id": 2,
+        "difficulty": "easy",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT count(*) FROM Track T JOIN Genre G ON T.GenreId = G.GenreId WHERE G.Name = 'Rock'",
+        "error": null
+      },
+      {
+        "id": 3,
+        "difficulty": "easy",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT ROUND(SUM(Total), 2) FROM Invoice",
+        "error": null
+      },
+      {
+        "id": 4,
+        "difficulty": "medium",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT BillingCountry, ROUND(SUM(Total), 2) AS TotalRevenue FROM Invoice GROUP BY BillingCountry ORDER BY TotalRevenue DESC LIMIT 5",
+        "error": null
+      },
+      {
+        "id": 5,
+        "difficulty": "medium",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT T2.Name, COUNT(T1.AlbumId) AS AlbumCount FROM Album AS T1 JOIN Artist AS T2 ON T1.ArtistId = T2.ArtistId GROUP BY T2.Name ORDER BY AlbumCount DESC LIMIT 3",
+        "error": null
+      },
+      {
+        "id": 6,
+        "difficulty": "medium",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT g.Name, ROUND(SUM(il.UnitPrice * il.Quantity), 2) AS TotalRevenue FROM Genre g JOIN Track t ON g.GenreId = t.GenreId JOIN InvoiceLine il ON t.TrackId = il.TrackId GROUP BY g.Name ORDER BY TotalRevenue DESC LIMIT 5",
+        "error": null
+      },
+      {
+        "id": 7,
+        "difficulty": "medium",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT date_part('year', InvoiceDate) AS Year, COUNT(InvoiceId) AS InvoiceCount FROM Invoice GROUP BY Year ORDER BY Year",
+        "error": null
+      },
+      {
+        "id": 8,
+        "difficulty": "medium",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT BillingCountry, ROUND(AVG(Total), 2) AS AverageTotal FROM Invoice GROUP BY BillingCountry HAVING COUNT(InvoiceId) >= 5",
+        "error": null
+      },
+      {
+        "id": 9,
+        "difficulty": "hard",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "WITH CustomerSpending AS (\n    SELECT \n        c.Country, \n        c.FirstName || ' ' || c.LastName AS FullName, \n        ROUND(SUM(i.Total), 2) AS TotalSpent\n    FROM Customer c\n    JOIN Invoice i ON c.CustomerId = i.CustomerId\n    GROUP BY c.Country, FullName\n),\nRankedSpending AS (\n    SELECT \n        Country, \n        FullName, \n        TotalSpent,\n        RANK() OVER (PARTITION BY Country ORDER BY TotalSpent DESC) as rnk\n    FROM CustomerSpending\n)\nSELECT Country, FullName, TotalSpent\nFROM RankedSpending\nWHERE rnk = 1",
+        "error": null
+      },
+      {
+        "id": 10,
+        "difficulty": "hard",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT Name FROM Artist WHERE ArtistId NOT IN (SELECT DISTINCT Album.ArtistId FROM Album JOIN Track ON Album.AlbumId = Track.AlbumId JOIN InvoiceLine ON Track.TrackId = InvoiceLine.TrackId)",
+        "error": null
+      },
+      {
+        "id": 11,
+        "difficulty": "easy",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT count(*) FROM Invoice WHERE date_part('year', InvoiceDate) = 2012",
+        "error": null
+      },
+      {
+        "id": 12,
+        "difficulty": "easy",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT ROUND(AVG(Milliseconds) / 60000, 2) FROM Track",
+        "error": null
+      },
+      {
+        "id": 13,
+        "difficulty": "easy",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT Country, COUNT(CustomerId) FROM Customer GROUP BY Country",
+        "error": null
+      },
+      {
+        "id": 14,
+        "difficulty": "medium",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT month(InvoiceDate) AS Month, ROUND(SUM(Total), 2) AS Revenue FROM Invoice WHERE year(InvoiceDate) = 2012 GROUP BY Month ORDER BY Month",
+        "error": null
+      },
+      {
+        "id": 15,
+        "difficulty": "medium",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT ROUND(100.0 * SUM(CASE WHEN BillingCountry = 'USA' THEN Total ELSE 0 END) / SUM(Total), 2) FROM Invoice",
+        "error": null
+      },
+      {
+        "id": 16,
+        "difficulty": "medium",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT COUNT(*) FROM Track WHERE TrackId NOT IN (SELECT DISTINCT TrackId FROM InvoiceLine)",
+        "error": null
+      },
+      {
+        "id": 17,
+        "difficulty": "hard",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT FirstName || ' ' || LastName AS FullName, ROUND(SUM(Total), 2) AS TotalSpent FROM Customer JOIN Invoice ON Customer.CustomerId = Invoice.CustomerId GROUP BY FullName HAVING TotalSpent > (SELECT AVG(CustomerTotal) FROM (SELECT SUM(Total) AS CustomerTotal FROM Invoice GROUP BY CustomerId)) ORDER BY TotalSpent DESC",
+        "error": null
+      },
+      {
+        "id": 18,
+        "difficulty": "medium",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT count(*) FROM (SELECT CustomerId FROM Invoice GROUP BY CustomerId HAVING count(InvoiceId) > 6) AS sub",
+        "error": null
+      },
+      {
+        "id": 19,
+        "difficulty": "medium",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT G.Name, ROUND(AVG(T.Milliseconds) / 60000, 2) AS AverageLengthMinutes FROM Genre G JOIN Track T ON G.GenreId = T.GenreId GROUP BY G.Name ORDER BY AverageLengthMinutes DESC LIMIT 1",
+        "error": null
+      },
+      {
+        "id": 20,
+        "difficulty": "hard",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT FirstName || ' ' || LastName AS FullName, COUNT(DISTINCT T.GenreId) AS GenreCount FROM Customer C JOIN Invoice I ON C.CustomerId = I.CustomerId JOIN InvoiceLine IL ON I.InvoiceId = IL.InvoiceId JOIN Track T ON IL.TrackId = T.TrackId GROUP BY FullName HAVING GenreCount > 5",
+        "error": null
+      },
+      {
+        "id": 21,
+        "difficulty": "hard",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "WITH MonthlyRevenue AS (\n    SELECT \n        EXTRACT(MONTH FROM InvoiceDate) AS Month,\n        ROUND(SUM(Total), 2) AS Revenue\n    FROM Invoice\n    WHERE EXTRACT(YEAR FROM InvoiceDate) = 2011\n    GROUP BY 1\n),\nRevenueWithLag AS (\n    SELECT \n        Month,\n        Revenue,\n        LAG(Revenue) OVER (ORDER BY Month) AS PrevRevenue\n    FROM MonthlyRevenue\n)\nSELECT \n    Month,\n    Revenue,\n    ROUND(Revenue - PrevRevenue, 2) AS Change\nFROM RevenueWithLag\nWHERE Month BETWEEN 2 AND 12\nORDER BY Month",
+        "error": null
+      },
+      {
+        "id": 22,
+        "difficulty": "hard",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT T3.Name, COUNT(DISTINCT T1.GenreId) AS GenreCount FROM Track AS T1 JOIN Album AS T2 ON T1.AlbumId = T2.AlbumId JOIN Artist AS T3 ON T2.ArtistId = T3.ArtistId GROUP BY T3.Name HAVING COUNT(DISTINCT T1.GenreId) >= 3",
+        "error": null
+      },
+      {
+        "id": 23,
+        "difficulty": "medium",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT g.Name, ROUND(SUM(il.UnitPrice * il.Quantity) * 100.0 / (SELECT SUM(UnitPrice * Quantity) FROM InvoiceLine), 2) AS Percentage FROM Genre g JOIN Track t ON g.GenreId = t.GenreId JOIN InvoiceLine il ON t.TrackId = il.TrackId GROUP BY g.Name",
+        "error": null
+      },
+      {
+        "id": 24,
+        "difficulty": "hard",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT FirstName || ' ' || LastName FROM Customer WHERE CustomerId NOT IN (SELECT T1.CustomerId FROM Invoice AS T1 JOIN InvoiceLine AS T2 ON T1.InvoiceId = T2.InvoiceId JOIN Track AS T3 ON T2.TrackId = T3.TrackId JOIN Genre AS T4 ON T3.GenreId = T4.GenreId WHERE T4.Name = 'Latin')",
+        "error": null
+      },
+      {
+        "id": 25,
+        "difficulty": "hard",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT FirstName || ' ' || LastName AS FullName, InvoiceDate, Total FROM Customer JOIN (SELECT CustomerId, InvoiceDate, Total, RANK() OVER (PARTITION BY CustomerId ORDER BY InvoiceDate DESC) as rnk FROM Invoice) AS LatestInvoices ON Customer.CustomerId = LatestInvoices.CustomerId WHERE rnk = 1",
+        "error": null
+      }
+    ],
+    [
+      {
+        "id": 1,
+        "difficulty": "easy",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT count(*) FROM Customer",
+        "error": null
+      },
+      {
+        "id": 2,
+        "difficulty": "easy",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT count(*) FROM Track T JOIN Genre G ON T.GenreId = G.GenreId WHERE G.Name = 'Rock'",
+        "error": null
+      },
+      {
+        "id": 3,
+        "difficulty": "easy",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT ROUND(SUM(Total), 2) FROM Invoice",
+        "error": null
+      },
+      {
+        "id": 4,
+        "difficulty": "medium",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT BillingCountry, ROUND(SUM(Total), 2) AS TotalRevenue FROM Invoice GROUP BY BillingCountry ORDER BY TotalRevenue DESC LIMIT 5",
+        "error": null
+      },
+      {
+        "id": 5,
+        "difficulty": "medium",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT T2.Name, COUNT(T1.AlbumId) AS AlbumCount FROM Album AS T1 JOIN Artist AS T2 ON T1.ArtistId = T2.ArtistId GROUP BY T2.Name ORDER BY AlbumCount DESC LIMIT 3",
+        "error": null
+      },
+      {
+        "id": 6,
+        "difficulty": "medium",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT g.Name, ROUND(SUM(il.UnitPrice * il.Quantity), 2) AS TotalRevenue FROM Genre g JOIN Track t ON g.GenreId = t.GenreId JOIN InvoiceLine il ON t.TrackId = il.TrackId GROUP BY g.Name ORDER BY TotalRevenue DESC LIMIT 5",
+        "error": null
+      },
+      {
+        "id": 7,
+        "difficulty": "medium",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT date_part('year', InvoiceDate) AS Year, COUNT(InvoiceId) AS InvoiceCount FROM Invoice GROUP BY Year ORDER BY Year",
+        "error": null
+      },
+      {
+        "id": 8,
+        "difficulty": "medium",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT BillingCountry, ROUND(AVG(Total), 2) AS AverageTotal FROM Invoice GROUP BY BillingCountry HAVING COUNT(InvoiceId) >= 5",
+        "error": null
+      },
+      {
+        "id": 9,
+        "difficulty": "hard",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "WITH CustomerSpending AS (\n    SELECT \n        c.Country, \n        c.FirstName || ' ' || c.LastName AS FullName, \n        ROUND(SUM(i.Total), 2) AS TotalSpent\n    FROM Customer c\n    JOIN Invoice i ON c.CustomerId = i.CustomerId\n    GROUP BY c.Country, FullName\n),\nRankedSpending AS (\n    SELECT \n        Country, \n        FullName, \n        TotalSpent,\n        RANK() OVER (PARTITION BY Country ORDER BY TotalSpent DESC) as rnk\n    FROM CustomerSpending\n)\nSELECT Country, FullName, TotalSpent\nFROM RankedSpending\nWHERE rnk = 1",
+        "error": null
+      },
+      {
+        "id": 10,
+        "difficulty": "hard",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT Name FROM Artist WHERE ArtistId NOT IN (SELECT DISTINCT Album.ArtistId FROM Album JOIN Track ON Album.AlbumId = Track.AlbumId JOIN InvoiceLine ON Track.TrackId = InvoiceLine.TrackId)",
+        "error": null
+      },
+      {
+        "id": 11,
+        "difficulty": "easy",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT count(*) FROM Invoice WHERE date_part('year', InvoiceDate) = 2012",
+        "error": null
+      },
+      {
+        "id": 12,
+        "difficulty": "easy",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT ROUND(AVG(Milliseconds) / 60000, 2) FROM Track",
+        "error": null
+      },
+      {
+        "id": 13,
+        "difficulty": "easy",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT Country, COUNT(CustomerId) FROM Customer GROUP BY Country",
+        "error": null
+      },
+      {
+        "id": 14,
+        "difficulty": "medium",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT month(InvoiceDate) AS Month, ROUND(SUM(Total), 2) AS Revenue FROM Invoice WHERE year(InvoiceDate) = 2012 GROUP BY Month ORDER BY Month",
+        "error": null
+      },
+      {
+        "id": 15,
+        "difficulty": "medium",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT ROUND(100.0 * SUM(CASE WHEN BillingCountry = 'USA' THEN Total ELSE 0 END) / SUM(Total), 2) FROM Invoice",
+        "error": null
+      },
+      {
+        "id": 16,
+        "difficulty": "medium",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT COUNT(*) FROM Track WHERE TrackId NOT IN (SELECT DISTINCT TrackId FROM InvoiceLine)",
+        "error": null
+      },
+      {
+        "id": 17,
+        "difficulty": "hard",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT FirstName || ' ' || LastName AS FullName, ROUND(SUM(Total), 2) AS TotalSpent FROM Customer JOIN Invoice ON Customer.CustomerId = Invoice.CustomerId GROUP BY FullName HAVING TotalSpent > (SELECT AVG(CustomerTotal) FROM (SELECT SUM(Total) AS CustomerTotal FROM Invoice GROUP BY CustomerId)) ORDER BY TotalSpent DESC",
+        "error": null
+      },
+      {
+        "id": 18,
+        "difficulty": "medium",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT count(*) FROM (SELECT CustomerId FROM Invoice GROUP BY CustomerId HAVING count(InvoiceId) > 6) AS sub",
+        "error": null
+      },
+      {
+        "id": 19,
+        "difficulty": "medium",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT G.Name, ROUND(AVG(T.Milliseconds) / 60000, 2) AS AverageLengthMinutes FROM Genre G JOIN Track T ON G.GenreId = T.GenreId GROUP BY G.Name ORDER BY AverageLengthMinutes DESC LIMIT 1",
+        "error": null
+      },
+      {
+        "id": 20,
+        "difficulty": "hard",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT FirstName || ' ' || LastName AS FullName, COUNT(DISTINCT T.GenreId) AS GenreCount FROM Customer C JOIN Invoice I ON C.CustomerId = I.CustomerId JOIN InvoiceLine IL ON I.InvoiceId = IL.InvoiceId JOIN Track T ON IL.TrackId = T.TrackId GROUP BY FullName HAVING GenreCount > 5",
+        "error": null
+      },
+      {
+        "id": 21,
+        "difficulty": "hard",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "WITH MonthlyRevenue AS (\n    SELECT \n        EXTRACT(MONTH FROM InvoiceDate) AS Month,\n        ROUND(SUM(Total), 2) AS Revenue\n    FROM Invoice\n    WHERE EXTRACT(YEAR FROM InvoiceDate) = 2011\n    GROUP BY 1\n),\nRevenueWithLag AS (\n    SELECT \n        Month,\n        Revenue,\n        LAG(Revenue) OVER (ORDER BY Month) AS PrevRevenue\n    FROM MonthlyRevenue\n)\nSELECT \n    Month,\n    Revenue,\n    ROUND(Revenue - PrevRevenue, 2) AS Change\nFROM RevenueWithLag\nWHERE Month BETWEEN 2 AND 12\nORDER BY Month",
+        "error": null
+      },
+      {
+        "id": 22,
+        "difficulty": "hard",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT T3.Name, COUNT(DISTINCT T1.GenreId) AS GenreCount FROM Track AS T1 JOIN Album AS T2 ON T1.AlbumId = T2.AlbumId JOIN Artist AS T3 ON T2.ArtistId = T3.ArtistId GROUP BY T3.Name HAVING COUNT(DISTINCT T1.GenreId) >= 3",
+        "error": null
+      },
+      {
+        "id": 23,
+        "difficulty": "medium",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT g.Name, ROUND(SUM(il.UnitPrice * il.Quantity) * 100.0 / (SELECT SUM(UnitPrice * Quantity) FROM InvoiceLine), 2) AS Percentage FROM Genre g JOIN Track t ON g.GenreId = t.GenreId JOIN InvoiceLine il ON t.TrackId = il.TrackId GROUP BY g.Name",
+        "error": null
+      },
+      {
+        "id": 24,
+        "difficulty": "hard",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT FirstName || ' ' || LastName FROM Customer WHERE CustomerId NOT IN (SELECT T1.CustomerId FROM Invoice AS T1 JOIN InvoiceLine AS T2 ON T1.InvoiceId = T2.InvoiceId JOIN Track AS T3 ON T2.TrackId = T3.TrackId JOIN Genre AS T4 ON T3.GenreId = T4.GenreId WHERE T4.Name = 'Latin')",
+        "error": null
+      },
+      {
+        "id": 25,
+        "difficulty": "hard",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT FirstName || ' ' || LastName AS FullName, InvoiceDate, Total FROM Customer JOIN (SELECT CustomerId, InvoiceDate, Total, RANK() OVER (PARTITION BY CustomerId ORDER BY InvoiceDate DESC) as rnk FROM Invoice) AS LatestInvoices ON Customer.CustomerId = LatestInvoices.CustomerId WHERE rnk = 1",
+        "error": null
+      }
+    ],
+    [
+      {
+        "id": 1,
+        "difficulty": "easy",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT count(*) FROM Customer",
+        "error": null
+      },
+      {
+        "id": 2,
+        "difficulty": "easy",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT count(*) FROM Track T JOIN Genre G ON T.GenreId = G.GenreId WHERE G.Name = 'Rock'",
+        "error": null
+      },
+      {
+        "id": 3,
+        "difficulty": "easy",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT ROUND(SUM(Total), 2) FROM Invoice",
+        "error": null
+      },
+      {
+        "id": 4,
+        "difficulty": "medium",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT BillingCountry, ROUND(SUM(Total), 2) AS TotalRevenue FROM Invoice GROUP BY BillingCountry ORDER BY TotalRevenue DESC LIMIT 5",
+        "error": null
+      },
+      {
+        "id": 5,
+        "difficulty": "medium",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT T2.Name, COUNT(T1.AlbumId) AS AlbumCount FROM Album AS T1 JOIN Artist AS T2 ON T1.ArtistId = T2.ArtistId GROUP BY T2.Name ORDER BY AlbumCount DESC LIMIT 3",
+        "error": null
+      },
+      {
+        "id": 6,
+        "difficulty": "medium",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT g.Name, ROUND(SUM(il.UnitPrice * il.Quantity), 2) AS TotalRevenue FROM Genre g JOIN Track t ON g.GenreId = t.GenreId JOIN InvoiceLine il ON t.TrackId = il.TrackId GROUP BY g.Name ORDER BY TotalRevenue DESC LIMIT 5",
+        "error": null
+      },
+      {
+        "id": 7,
+        "difficulty": "medium",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT date_part('year', InvoiceDate) AS Year, COUNT(InvoiceId) AS InvoiceCount FROM Invoice GROUP BY Year ORDER BY Year",
+        "error": null
+      },
+      {
+        "id": 8,
+        "difficulty": "medium",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT BillingCountry, ROUND(AVG(Total), 2) AS AverageTotal FROM Invoice GROUP BY BillingCountry HAVING COUNT(InvoiceId) >= 5",
+        "error": null
+      },
+      {
+        "id": 9,
+        "difficulty": "hard",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "WITH CustomerSpending AS (\n    SELECT \n        c.Country, \n        c.FirstName || ' ' || c.LastName AS FullName, \n        ROUND(SUM(i.Total), 2) AS TotalSpent\n    FROM Customer c\n    JOIN Invoice i ON c.CustomerId = i.CustomerId\n    GROUP BY c.Country, FullName\n),\nRankedSpending AS (\n    SELECT \n        Country, \n        FullName, \n        TotalSpent,\n        RANK() OVER (PARTITION BY Country ORDER BY TotalSpent DESC) as rnk\n    FROM CustomerSpending\n)\nSELECT Country, FullName, TotalSpent\nFROM RankedSpending\nWHERE rnk = 1",
+        "error": null
+      },
+      {
+        "id": 10,
+        "difficulty": "hard",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT Name FROM Artist WHERE ArtistId NOT IN (SELECT DISTINCT Album.ArtistId FROM Album JOIN Track ON Album.AlbumId = Track.AlbumId JOIN InvoiceLine ON Track.TrackId = InvoiceLine.TrackId)",
+        "error": null
+      },
+      {
+        "id": 11,
+        "difficulty": "easy",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT count(*) FROM Invoice WHERE date_part('year', InvoiceDate) = 2012",
+        "error": null
+      },
+      {
+        "id": 12,
+        "difficulty": "easy",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT ROUND(AVG(Milliseconds) / 60000, 2) FROM Track",
+        "error": null
+      },
+      {
+        "id": 13,
+        "difficulty": "easy",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT Country, COUNT(CustomerId) FROM Customer GROUP BY Country",
+        "error": null
+      },
+      {
+        "id": 14,
+        "difficulty": "medium",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT month(InvoiceDate) AS Month, ROUND(SUM(Total), 2) AS Revenue FROM Invoice WHERE year(InvoiceDate) = 2012 GROUP BY Month ORDER BY Month",
+        "error": null
+      },
+      {
+        "id": 15,
+        "difficulty": "medium",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT ROUND(100.0 * SUM(CASE WHEN BillingCountry = 'USA' THEN Total ELSE 0 END) / SUM(Total), 2) FROM Invoice",
+        "error": null
+      },
+      {
+        "id": 16,
+        "difficulty": "medium",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT COUNT(*) FROM Track WHERE TrackId NOT IN (SELECT DISTINCT TrackId FROM InvoiceLine)",
+        "error": null
+      },
+      {
+        "id": 17,
+        "difficulty": "hard",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT FirstName || ' ' || LastName AS FullName, ROUND(SUM(Total), 2) AS TotalSpent FROM Customer JOIN Invoice ON Customer.CustomerId = Invoice.CustomerId GROUP BY FullName HAVING TotalSpent > (SELECT AVG(CustomerTotal) FROM (SELECT SUM(Total) AS CustomerTotal FROM Invoice GROUP BY CustomerId)) ORDER BY TotalSpent DESC",
+        "error": null
+      },
+      {
+        "id": 18,
+        "difficulty": "medium",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT count(*) FROM (SELECT CustomerId FROM Invoice GROUP BY CustomerId HAVING count(InvoiceId) > 6) AS sub",
+        "error": null
+      },
+      {
+        "id": 19,
+        "difficulty": "medium",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT G.Name, ROUND(AVG(T.Milliseconds) / 60000, 2) AS AverageLengthMinutes FROM Genre G JOIN Track T ON G.GenreId = T.GenreId GROUP BY G.Name ORDER BY AverageLengthMinutes DESC LIMIT 1",
+        "error": null
+      },
+      {
+        "id": 20,
+        "difficulty": "hard",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT FirstName || ' ' || LastName AS FullName, COUNT(DISTINCT T.GenreId) AS GenreCount FROM Customer C JOIN Invoice I ON C.CustomerId = I.CustomerId JOIN InvoiceLine IL ON I.InvoiceId = IL.InvoiceId JOIN Track T ON IL.TrackId = T.TrackId GROUP BY FullName HAVING GenreCount > 5",
+        "error": null
+      },
+      {
+        "id": 21,
+        "difficulty": "hard",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "WITH MonthlyRevenue AS (\n    SELECT \n        EXTRACT(MONTH FROM InvoiceDate) AS Month,\n        ROUND(SUM(Total), 2) AS Revenue\n    FROM Invoice\n    WHERE EXTRACT(YEAR FROM InvoiceDate) = 2011\n    GROUP BY 1\n),\nRevenueWithLag AS (\n    SELECT \n        Month,\n        Revenue,\n        LAG(Revenue) OVER (ORDER BY Month) AS PrevRevenue\n    FROM MonthlyRevenue\n)\nSELECT \n    Month,\n    Revenue,\n    ROUND(Revenue - PrevRevenue, 2) AS Change\nFROM RevenueWithLag\nWHERE Month BETWEEN 2 AND 12\nORDER BY Month",
+        "error": null
+      },
+      {
+        "id": 22,
+        "difficulty": "hard",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT T3.Name, COUNT(DISTINCT T1.GenreId) AS GenreCount FROM Track AS T1 JOIN Album AS T2 ON T1.AlbumId = T2.AlbumId JOIN Artist AS T3 ON T2.ArtistId = T3.ArtistId GROUP BY T3.Name HAVING COUNT(DISTINCT T1.GenreId) >= 3",
+        "error": null
+      },
+      {
+        "id": 23,
+        "difficulty": "medium",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT g.Name, ROUND(SUM(il.UnitPrice * il.Quantity) * 100.0 / (SELECT SUM(UnitPrice * Quantity) FROM InvoiceLine), 2) AS Percentage FROM Genre g JOIN Track t ON g.GenreId = t.GenreId JOIN InvoiceLine il ON t.TrackId = il.TrackId GROUP BY g.Name",
+        "error": null
+      },
+      {
+        "id": 24,
+        "difficulty": "hard",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT FirstName || ' ' || LastName FROM Customer WHERE CustomerId NOT IN (SELECT T1.CustomerId FROM Invoice AS T1 JOIN InvoiceLine AS T2 ON T1.InvoiceId = T2.InvoiceId JOIN Track AS T3 ON T2.TrackId = T3.TrackId JOIN Genre AS T4 ON T3.GenreId = T4.GenreId WHERE T4.Name = 'Latin')",
+        "error": null
+      },
+      {
+        "id": 25,
+        "difficulty": "hard",
+        "passed": true,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT FirstName || ' ' || LastName AS FullName, InvoiceDate, Total FROM Customer JOIN (SELECT CustomerId, InvoiceDate, Total, RANK() OVER (PARTITION BY CustomerId ORDER BY InvoiceDate DESC) as rnk FROM Invoice) AS LatestInvoices ON Customer.CustomerId = LatestInvoices.CustomerId WHERE rnk = 1",
+        "error": null
+      }
+    ]
+  ]
+}

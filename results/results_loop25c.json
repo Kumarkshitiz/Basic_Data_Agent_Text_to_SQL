@@ -1,0 +1,514 @@
+{
+  "mode": "loop",
+  "primary": "gemini-3.1-flash-lite",
+  "fallback": "gemini-flash-lite-latest",
+  "scores_per_run": [
+    25
+  ],
+  "results": [
+    {
+      "id": 1,
+      "difficulty": "easy",
+      "passed": true,
+      "status": "ok",
+      "repairs": 0,
+      "model_used": "gemini-3.1-flash-lite",
+      "sql": "SELECT count(*) FROM Customer",
+      "error": null
+    },
+    {
+      "id": 2,
+      "difficulty": "easy",
+      "passed": true,
+      "status": "ok",
+      "repairs": 0,
+      "model_used": "gemini-3.1-flash-lite",
+      "sql": "SELECT count(*) FROM Track T JOIN Genre G ON T.GenreId = G.GenreId WHERE G.Name = 'Rock'",
+      "error": null
+    },
+    {
+      "id": 3,
+      "difficulty": "easy",
+      "passed": true,
+      "status": "ok",
+      "repairs": 0,
+      "model_used": "gemini-3.1-flash-lite",
+      "sql": "SELECT ROUND(SUM(Total), 2) FROM Invoice",
+      "error": null
+    },
+    {
+      "id": 4,
+      "difficulty": "medium",
+      "passed": true,
+      "status": "ok",
+      "repairs": 0,
+      "model_used": "gemini-3.1-flash-lite",
+      "sql": "-- ASSUMPTION: top 5 billing countries = countries with the highest sum of Total invoice amounts\nSELECT BillingCountry, ROUND(SUM(Total), 2) AS TotalRevenue\nFROM Invoice\nGROUP BY BillingCountry\nORDER BY TotalRevenue DESC\nLIMIT 5",
+      "error": null
+    },
+    {
+      "id": 5,
+      "difficulty": "medium",
+      "passed": true,
+      "status": "ok",
+      "repairs": 0,
+      "model_used": "gemini-3.1-flash-lite",
+      "sql": "-- ASSUMPTION: most albums = highest count of unique AlbumId associated with an artist\nSELECT T2.Name, COUNT(T1.AlbumId) AS AlbumCount FROM Album AS T1 JOIN Artist AS T2 ON T1.ArtistId = T2.ArtistId GROUP BY T2.ArtistId, T2.Name ORDER BY AlbumCount DESC LIMIT 3",
+      "error": null
+    },
+    {
+      "id": 6,
+      "difficulty": "medium",
+      "passed": true,
+      "status": "ok",
+      "repairs": 0,
+      "model_used": "gemini-3.1-flash-lite",
+      "sql": "-- ASSUMPTION: top 5 genres by sales revenue = highest sum of (UnitPrice * Quantity) per genre\nSELECT g.Name, ROUND(SUM(il.UnitPrice * il.Quantity), 2) AS TotalRevenue\nFROM Genre g\nJOIN Track t ON g.GenreId = t.GenreId\nJOIN InvoiceLine il ON t.TrackId = il.TrackId\nGROUP BY g.GenreId, g.Name\nORDER BY TotalRevenue DESC\nLIMIT 5",
+      "error": null
+    },
+    {
+      "id": 7,
+      "difficulty": "medium",
+      "passed": true,
+      "status": "ok",
+      "repairs": 0,
+      "model_used": "gemini-3.1-flash-lite",
+      "sql": "SELECT EXTRACT(YEAR FROM InvoiceDate) AS InvoiceYear, COUNT(InvoiceId) AS InvoiceCount FROM Invoice GROUP BY InvoiceYear ORDER BY InvoiceYear",
+      "error": null
+    },
+    {
+      "id": 8,
+      "difficulty": "medium",
+      "passed": true,
+      "status": "ok",
+      "repairs": 0,
+      "model_used": "gemini-3.1-flash-lite",
+      "sql": "SELECT BillingCountry, AVG(Total) FROM Invoice GROUP BY BillingCountry HAVING COUNT(InvoiceId) >= 5",
+      "error": null
+    },
+    {
+      "id": 9,
+      "difficulty": "hard",
+      "passed": true,
+      "status": "ok",
+      "repairs": 0,
+      "model_used": "gemini-3.1-flash-lite",
+      "sql": "-- ASSUMPTION: top-spending = highest total sum of invoice totals per customer\nWITH CustomerTotals AS (\n    SELECT \n        c.Country, \n        c.FirstName || ' ' || c.LastName AS FullName, \n        ROUND(SUM(i.Total), 2) AS TotalSpent,\n        RANK() OVER (PARTITION BY c.Country ORDER BY ROUND(SUM(i.Total), 2) DESC) as rnk\n    FROM Customer c\n    JOIN Invoice i ON c.CustomerId = i.CustomerId\n    GROUP BY c.Country, c.CustomerId, c.FirstName, c.LastName\n)\nSELECT Country, FullName, TotalSpent\nFROM CustomerTotals\nWHERE rnk = 1",
+      "error": null
+    },
+    {
+      "id": 10,
+      "difficulty": "hard",
+      "passed": true,
+      "status": "ok",
+      "repairs": 0,
+      "model_used": "gemini-3.1-flash-lite",
+      "sql": "SELECT Name FROM Artist WHERE ArtistId NOT IN (SELECT DISTINCT Album.ArtistId FROM InvoiceLine JOIN Track ON InvoiceLine.TrackId = Track.TrackId JOIN Album ON Track.AlbumId = Album.AlbumId)",
+      "error": null
+    },
+    {
+      "id": 11,
+      "difficulty": "easy",
+      "passed": true,
+      "status": "ok",
+      "repairs": 0,
+      "model_used": "gemini-3.1-flash-lite",
+      "sql": "SELECT count(*) FROM Invoice WHERE date_part('year', InvoiceDate) = 2012",
+      "error": null
+    },
+    {
+      "id": 12,
+      "difficulty": "easy",
+      "passed": true,
+      "status": "ok",
+      "repairs": 0,
+      "model_used": "gemini-3.1-flash-lite",
+      "sql": "SELECT ROUND(AVG(Milliseconds) / 60000, 2) FROM Track",
+      "error": null
+    },
+    {
+      "id": 13,
+      "difficulty": "easy",
+      "passed": true,
+      "status": "ok",
+      "repairs": 0,
+      "model_used": "gemini-3.1-flash-lite",
+      "sql": "SELECT Country, COUNT(CustomerId) FROM Customer GROUP BY Country",
+      "error": null
+    },
+    {
+      "id": 14,
+      "difficulty": "medium",
+      "passed": true,
+      "status": "ok",
+      "repairs": 0,
+      "model_used": "gemini-3.1-flash-lite",
+      "sql": "SELECT month(InvoiceDate) AS Month, ROUND(SUM(Total), 2) AS Revenue FROM Invoice WHERE year(InvoiceDate) = 2012 GROUP BY month(InvoiceDate) ORDER BY Month",
+      "error": null
+    },
+    {
+      "id": 15,
+      "difficulty": "medium",
+      "passed": true,
+      "status": "ok",
+      "repairs": 0,
+      "model_used": "gemini-3.1-flash-lite",
+      "sql": "SELECT ROUND(100.0 * SUM(CASE WHEN BillingCountry = 'USA' THEN Total ELSE 0 END) / SUM(Total), 2) FROM Invoice",
+      "error": null
+    },
+    {
+      "id": 16,
+      "difficulty": "medium",
+      "passed": true,
+      "status": "ok",
+      "repairs": 0,
+      "model_used": "gemini-3.1-flash-lite",
+      "sql": "SELECT count(*) FROM Track WHERE TrackId NOT IN (SELECT DISTINCT TrackId FROM InvoiceLine)",
+      "error": null
+    },
+    {
+      "id": 17,
+      "difficulty": "hard",
+      "passed": true,
+      "status": "ok",
+      "repairs": 0,
+      "model_used": "gemini-3.1-flash-lite",
+      "sql": "-- ASSUMPTION: spent = sum of Total from Invoice table\nWITH CustomerSpend AS (\n    SELECT \n        c.FirstName || ' ' || c.LastName AS FullName,\n        SUM(i.Total) AS TotalSpent\n    FROM Customer c\n    JOIN Invoice i ON c.CustomerId = i.CustomerId\n    GROUP BY c.CustomerId, c.FirstName, c.LastName\n)\nSELECT \n    FullName, \n    ROUND(TotalSpent, 2) AS TotalSpent\nFROM CustomerSpend\nWHERE TotalSpent > (SELECT AVG(TotalSpent) FROM CustomerSpend)",
+      "error": null
+    },
+    {
+      "id": 18,
+      "difficulty": "medium",
+      "passed": true,
+      "status": "ok",
+      "repairs": 0,
+      "model_used": "gemini-3.1-flash-lite",
+      "sql": "SELECT count(*) FROM (SELECT CustomerId FROM Invoice GROUP BY CustomerId HAVING count(InvoiceId) > 6) AS sub",
+      "error": null
+    },
+    {
+      "id": 19,
+      "difficulty": "medium",
+      "passed": true,
+      "status": "ok",
+      "repairs": 0,
+      "model_used": "gemini-3.1-flash-lite",
+      "sql": "-- ASSUMPTION: longest average track length = highest average Milliseconds per genre\nSELECT g.Name, ROUND(AVG(t.Milliseconds) / 60000, 2) AS AverageLengthMinutes\nFROM Genre g\nJOIN Track t ON g.GenreId = t.GenreId\nGROUP BY g.GenreId, g.Name\nORDER BY AverageLengthMinutes DESC\nLIMIT 1",
+      "error": null
+    },
+    {
+      "id": 20,
+      "difficulty": "hard",
+      "passed": true,
+      "status": "ok",
+      "repairs": 0,
+      "model_used": "gemini-3.1-flash-lite",
+      "sql": "SELECT FirstName || ' ' || LastName AS FullName, COUNT(DISTINCT T.GenreId) AS GenreCount FROM Customer C JOIN Invoice I ON C.CustomerId = I.CustomerId JOIN InvoiceLine IL ON I.InvoiceId = IL.InvoiceId JOIN Track T ON IL.TrackId = T.TrackId GROUP BY C.CustomerId, C.FirstName, C.LastName HAVING COUNT(DISTINCT T.GenreId) > 5",
+      "error": null
+    },
+    {
+      "id": 21,
+      "difficulty": "hard",
+      "passed": true,
+      "status": "ok",
+      "repairs": 0,
+      "model_used": "gemini-3.1-flash-lite",
+      "sql": "-- ASSUMPTION: revenue change is the difference between the current month's total invoice sum and the previous month's total invoice sum.\nWITH MonthlyRevenue AS (\n    SELECT \n        EXTRACT(MONTH FROM InvoiceDate) AS Month,\n        SUM(Total) AS Revenue\n    FROM Invoice\n    WHERE EXTRACT(YEAR FROM InvoiceDate) = 2011\n    GROUP BY 1\n)\nSELECT \n    curr.Month,\n    ROUND(curr.Revenue, 2) AS Revenue,\n    ROUND(curr.Revenue - prev.Revenue, 2) AS RevenueChange\nFROM MonthlyRevenue curr\nJOIN MonthlyRevenue prev ON curr.Month = prev.Month + 1\nORDER BY curr.Month",
+      "error": null
+    },
+    {
+      "id": 22,
+      "difficulty": "hard",
+      "passed": true,
+      "status": "ok",
+      "repairs": 0,
+      "model_used": "gemini-3.1-flash-lite",
+      "sql": "SELECT T2.Name, COUNT(DISTINCT T1.GenreId) AS GenreCount FROM Track AS T1 JOIN Album AS T3 ON T1.AlbumId = T3.AlbumId JOIN Artist AS T2 ON T3.ArtistId = T2.ArtistId GROUP BY T2.ArtistId, T2.Name HAVING COUNT(DISTINCT T1.GenreId) >= 3",
+      "error": null
+    },
+    {
+      "id": 23,
+      "difficulty": "medium",
+      "passed": true,
+      "status": "ok",
+      "repairs": 0,
+      "model_used": "gemini-3.1-flash-lite",
+      "sql": "-- ASSUMPTION: percentage of total sales revenue = (sum of (unit price * quantity) for genre / sum of (unit price * quantity) for all genres) * 100\nWITH GenreRevenue AS (\n    SELECT \n        g.Name, \n        SUM(il.UnitPrice * il.Quantity) as Revenue\n    FROM Genre g\n    JOIN Track t ON g.GenreId = t.GenreId\n    JOIN InvoiceLine il ON t.TrackId = il.TrackId\n    GROUP BY g.GenreId, g.Name\n),\nTotalRevenue AS (\n    SELECT SUM(Revenue) as Total FROM GenreRevenue\n)\nSELECT \n    gr.Name, \n    ROUND((gr.Revenue / tr.Total) * 100, 2) as Percentage\nFROM GenreRevenue gr, TotalRevenue tr",
+      "error": null
+    },
+    {
+      "id": 24,
+      "difficulty": "hard",
+      "passed": true,
+      "status": "ok",
+      "repairs": 0,
+      "model_used": "gemini-3.1-flash-lite",
+      "sql": "SELECT FirstName || ' ' || LastName FROM Customer WHERE CustomerId NOT IN (SELECT DISTINCT i.CustomerId FROM Invoice i JOIN InvoiceLine il ON i.InvoiceId = il.InvoiceId JOIN Track t ON il.TrackId = t.TrackId JOIN Genre g ON t.GenreId = g.GenreId WHERE g.Name = 'Latin')",
+      "error": null
+    },
+    {
+      "id": 25,
+      "difficulty": "hard",
+      "passed": true,
+      "status": "ok",
+      "repairs": 0,
+      "model_used": "gemini-3.1-flash-lite",
+      "sql": "WITH LatestInvoices AS (\n    SELECT \n        CustomerId, \n        MAX(InvoiceDate) as MaxDate\n    FROM Invoice\n    GROUP BY CustomerId\n)\nSELECT \n    c.FirstName || ' ' || c.LastName AS FullName, \n    i.InvoiceDate, \n    i.Total\nFROM Customer c\nJOIN Invoice i ON c.CustomerId = i.CustomerId\nJOIN LatestInvoices li ON i.CustomerId = li.CustomerId AND i.InvoiceDate = li.MaxDate",
+      "error": null
+    }
+  ],
+  "all_runs": [
+    [
+      {
+        "id": 1,
+        "difficulty": "easy",
+        "passed": true,
+        "status": "ok",
+        "repairs": 0,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT count(*) FROM Customer",
+        "error": null
+      },
+      {
+        "id": 2,
+        "difficulty": "easy",
+        "passed": true,
+        "status": "ok",
+        "repairs": 0,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT count(*) FROM Track T JOIN Genre G ON T.GenreId = G.GenreId WHERE G.Name = 'Rock'",
+        "error": null
+      },
+      {
+        "id": 3,
+        "difficulty": "easy",
+        "passed": true,
+        "status": "ok",
+        "repairs": 0,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT ROUND(SUM(Total), 2) FROM Invoice",
+        "error": null
+      },
+      {
+        "id": 4,
+        "difficulty": "medium",
+        "passed": true,
+        "status": "ok",
+        "repairs": 0,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "-- ASSUMPTION: top 5 billing countries = countries with the highest sum of Total invoice amounts\nSELECT BillingCountry, ROUND(SUM(Total), 2) AS TotalRevenue\nFROM Invoice\nGROUP BY BillingCountry\nORDER BY TotalRevenue DESC\nLIMIT 5",
+        "error": null
+      },
+      {
+        "id": 5,
+        "difficulty": "medium",
+        "passed": true,
+        "status": "ok",
+        "repairs": 0,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "-- ASSUMPTION: most albums = highest count of unique AlbumId associated with an artist\nSELECT T2.Name, COUNT(T1.AlbumId) AS AlbumCount FROM Album AS T1 JOIN Artist AS T2 ON T1.ArtistId = T2.ArtistId GROUP BY T2.ArtistId, T2.Name ORDER BY AlbumCount DESC LIMIT 3",
+        "error": null
+      },
+      {
+        "id": 6,
+        "difficulty": "medium",
+        "passed": true,
+        "status": "ok",
+        "repairs": 0,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "-- ASSUMPTION: top 5 genres by sales revenue = highest sum of (UnitPrice * Quantity) per genre\nSELECT g.Name, ROUND(SUM(il.UnitPrice * il.Quantity), 2) AS TotalRevenue\nFROM Genre g\nJOIN Track t ON g.GenreId = t.GenreId\nJOIN InvoiceLine il ON t.TrackId = il.TrackId\nGROUP BY g.GenreId, g.Name\nORDER BY TotalRevenue DESC\nLIMIT 5",
+        "error": null
+      },
+      {
+        "id": 7,
+        "difficulty": "medium",
+        "passed": true,
+        "status": "ok",
+        "repairs": 0,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT EXTRACT(YEAR FROM InvoiceDate) AS InvoiceYear, COUNT(InvoiceId) AS InvoiceCount FROM Invoice GROUP BY InvoiceYear ORDER BY InvoiceYear",
+        "error": null
+      },
+      {
+        "id": 8,
+        "difficulty": "medium",
+        "passed": true,
+        "status": "ok",
+        "repairs": 0,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT BillingCountry, AVG(Total) FROM Invoice GROUP BY BillingCountry HAVING COUNT(InvoiceId) >= 5",
+        "error": null
+      },
+      {
+        "id": 9,
+        "difficulty": "hard",
+        "passed": true,
+        "status": "ok",
+        "repairs": 0,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "-- ASSUMPTION: top-spending = highest total sum of invoice totals per customer\nWITH CustomerTotals AS (\n    SELECT \n        c.Country, \n        c.FirstName || ' ' || c.LastName AS FullName, \n        ROUND(SUM(i.Total), 2) AS TotalSpent,\n        RANK() OVER (PARTITION BY c.Country ORDER BY ROUND(SUM(i.Total), 2) DESC) as rnk\n    FROM Customer c\n    JOIN Invoice i ON c.CustomerId = i.CustomerId\n    GROUP BY c.Country, c.CustomerId, c.FirstName, c.LastName\n)\nSELECT Country, FullName, TotalSpent\nFROM CustomerTotals\nWHERE rnk = 1",
+        "error": null
+      },
+      {
+        "id": 10,
+        "difficulty": "hard",
+        "passed": true,
+        "status": "ok",
+        "repairs": 0,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT Name FROM Artist WHERE ArtistId NOT IN (SELECT DISTINCT Album.ArtistId FROM InvoiceLine JOIN Track ON InvoiceLine.TrackId = Track.TrackId JOIN Album ON Track.AlbumId = Album.AlbumId)",
+        "error": null
+      },
+      {
+        "id": 11,
+        "difficulty": "easy",
+        "passed": true,
+        "status": "ok",
+        "repairs": 0,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT count(*) FROM Invoice WHERE date_part('year', InvoiceDate) = 2012",
+        "error": null
+      },
+      {
+        "id": 12,
+        "difficulty": "easy",
+        "passed": true,
+        "status": "ok",
+        "repairs": 0,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT ROUND(AVG(Milliseconds) / 60000, 2) FROM Track",
+        "error": null
+      },
+      {
+        "id": 13,
+        "difficulty": "easy",
+        "passed": true,
+        "status": "ok",
+        "repairs": 0,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT Country, COUNT(CustomerId) FROM Customer GROUP BY Country",
+        "error": null
+      },
+      {
+        "id": 14,
+        "difficulty": "medium",
+        "passed": true,
+        "status": "ok",
+        "repairs": 0,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT month(InvoiceDate) AS Month, ROUND(SUM(Total), 2) AS Revenue FROM Invoice WHERE year(InvoiceDate) = 2012 GROUP BY month(InvoiceDate) ORDER BY Month",
+        "error": null
+      },
+      {
+        "id": 15,
+        "difficulty": "medium",
+        "passed": true,
+        "status": "ok",
+        "repairs": 0,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT ROUND(100.0 * SUM(CASE WHEN BillingCountry = 'USA' THEN Total ELSE 0 END) / SUM(Total), 2) FROM Invoice",
+        "error": null
+      },
+      {
+        "id": 16,
+        "difficulty": "medium",
+        "passed": true,
+        "status": "ok",
+        "repairs": 0,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT count(*) FROM Track WHERE TrackId NOT IN (SELECT DISTINCT TrackId FROM InvoiceLine)",
+        "error": null
+      },
+      {
+        "id": 17,
+        "difficulty": "hard",
+        "passed": true,
+        "status": "ok",
+        "repairs": 0,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "-- ASSUMPTION: spent = sum of Total from Invoice table\nWITH CustomerSpend AS (\n    SELECT \n        c.FirstName || ' ' || c.LastName AS FullName,\n        SUM(i.Total) AS TotalSpent\n    FROM Customer c\n    JOIN Invoice i ON c.CustomerId = i.CustomerId\n    GROUP BY c.CustomerId, c.FirstName, c.LastName\n)\nSELECT \n    FullName, \n    ROUND(TotalSpent, 2) AS TotalSpent\nFROM CustomerSpend\nWHERE TotalSpent > (SELECT AVG(TotalSpent) FROM CustomerSpend)",
+        "error": null
+      },
+      {
+        "id": 18,
+        "difficulty": "medium",
+        "passed": true,
+        "status": "ok",
+        "repairs": 0,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT count(*) FROM (SELECT CustomerId FROM Invoice GROUP BY CustomerId HAVING count(InvoiceId) > 6) AS sub",
+        "error": null
+      },
+      {
+        "id": 19,
+        "difficulty": "medium",
+        "passed": true,
+        "status": "ok",
+        "repairs": 0,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "-- ASSUMPTION: longest average track length = highest average Milliseconds per genre\nSELECT g.Name, ROUND(AVG(t.Milliseconds) / 60000, 2) AS AverageLengthMinutes\nFROM Genre g\nJOIN Track t ON g.GenreId = t.GenreId\nGROUP BY g.GenreId, g.Name\nORDER BY AverageLengthMinutes DESC\nLIMIT 1",
+        "error": null
+      },
+      {
+        "id": 20,
+        "difficulty": "hard",
+        "passed": true,
+        "status": "ok",
+        "repairs": 0,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT FirstName || ' ' || LastName AS FullName, COUNT(DISTINCT T.GenreId) AS GenreCount FROM Customer C JOIN Invoice I ON C.CustomerId = I.CustomerId JOIN InvoiceLine IL ON I.InvoiceId = IL.InvoiceId JOIN Track T ON IL.TrackId = T.TrackId GROUP BY C.CustomerId, C.FirstName, C.LastName HAVING COUNT(DISTINCT T.GenreId) > 5",
+        "error": null
+      },
+      {
+        "id": 21,
+        "difficulty": "hard",
+        "passed": true,
+        "status": "ok",
+        "repairs": 0,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "-- ASSUMPTION: revenue change is the difference between the current month's total invoice sum and the previous month's total invoice sum.\nWITH MonthlyRevenue AS (\n    SELECT \n        EXTRACT(MONTH FROM InvoiceDate) AS Month,\n        SUM(Total) AS Revenue\n    FROM Invoice\n    WHERE EXTRACT(YEAR FROM InvoiceDate) = 2011\n    GROUP BY 1\n)\nSELECT \n    curr.Month,\n    ROUND(curr.Revenue, 2) AS Revenue,\n    ROUND(curr.Revenue - prev.Revenue, 2) AS RevenueChange\nFROM MonthlyRevenue curr\nJOIN MonthlyRevenue prev ON curr.Month = prev.Month + 1\nORDER BY curr.Month",
+        "error": null
+      },
+      {
+        "id": 22,
+        "difficulty": "hard",
+        "passed": true,
+        "status": "ok",
+        "repairs": 0,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT T2.Name, COUNT(DISTINCT T1.GenreId) AS GenreCount FROM Track AS T1 JOIN Album AS T3 ON T1.AlbumId = T3.AlbumId JOIN Artist AS T2 ON T3.ArtistId = T2.ArtistId GROUP BY T2.ArtistId, T2.Name HAVING COUNT(DISTINCT T1.GenreId) >= 3",
+        "error": null
+      },
+      {
+        "id": 23,
+        "difficulty": "medium",
+        "passed": true,
+        "status": "ok",
+        "repairs": 0,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "-- ASSUMPTION: percentage of total sales revenue = (sum of (unit price * quantity) for genre / sum of (unit price * quantity) for all genres) * 100\nWITH GenreRevenue AS (\n    SELECT \n        g.Name, \n        SUM(il.UnitPrice * il.Quantity) as Revenue\n    FROM Genre g\n    JOIN Track t ON g.GenreId = t.GenreId\n    JOIN InvoiceLine il ON t.TrackId = il.TrackId\n    GROUP BY g.GenreId, g.Name\n),\nTotalRevenue AS (\n    SELECT SUM(Revenue) as Total FROM GenreRevenue\n)\nSELECT \n    gr.Name, \n    ROUND((gr.Revenue / tr.Total) * 100, 2) as Percentage\nFROM GenreRevenue gr, TotalRevenue tr",
+        "error": null
+      },
+      {
+        "id": 24,
+        "difficulty": "hard",
+        "passed": true,
+        "status": "ok",
+        "repairs": 0,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "SELECT FirstName || ' ' || LastName FROM Customer WHERE CustomerId NOT IN (SELECT DISTINCT i.CustomerId FROM Invoice i JOIN InvoiceLine il ON i.InvoiceId = il.InvoiceId JOIN Track t ON il.TrackId = t.TrackId JOIN Genre g ON t.GenreId = g.GenreId WHERE g.Name = 'Latin')",
+        "error": null
+      },
+      {
+        "id": 25,
+        "difficulty": "hard",
+        "passed": true,
+        "status": "ok",
+        "repairs": 0,
+        "model_used": "gemini-3.1-flash-lite",
+        "sql": "WITH LatestInvoices AS (\n    SELECT \n        CustomerId, \n        MAX(InvoiceDate) as MaxDate\n    FROM Invoice\n    GROUP BY CustomerId\n)\nSELECT \n    c.FirstName || ' ' || c.LastName AS FullName, \n    i.InvoiceDate, \n    i.Total\nFROM Customer c\nJOIN Invoice i ON c.CustomerId = i.CustomerId\nJOIN LatestInvoices li ON i.CustomerId = li.CustomerId AND i.InvoiceDate = li.MaxDate",
+        "error": null
+      }
+    ]
+  ]
+}

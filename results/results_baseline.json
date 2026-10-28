@@ -1,0 +1,75 @@
+{
+  "model": "gemini-3.1-flash-lite",
+  "results": [
+    {
+      "id": 1,
+      "difficulty": "easy",
+      "passed": false,
+      "sql": "",
+      "error": "503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}"
+    },
+    {
+      "id": 2,
+      "difficulty": "easy",
+      "passed": true,
+      "sql": "SELECT count(*) FROM Track T JOIN Genre G ON T.GenreId = G.GenreId WHERE G.Name = 'Rock'",
+      "error": null
+    },
+    {
+      "id": 3,
+      "difficulty": "easy",
+      "passed": true,
+      "sql": "SELECT SUM(Total) FROM Invoice",
+      "error": null
+    },
+    {
+      "id": 4,
+      "difficulty": "medium",
+      "passed": true,
+      "sql": "SELECT BillingCountry, SUM(Total) AS TotalRevenue FROM Invoice GROUP BY BillingCountry ORDER BY TotalRevenue DESC LIMIT 5",
+      "error": null
+    },
+    {
+      "id": 5,
+      "difficulty": "medium",
+      "passed": false,
+      "sql": "",
+      "error": "503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}"
+    },
+    {
+      "id": 6,
+      "difficulty": "medium",
+      "passed": true,
+      "sql": "SELECT g.Name, SUM(il.UnitPrice * il.Quantity) AS TotalRevenue FROM Genre g JOIN Track t ON g.GenreId = t.GenreId JOIN InvoiceLine il ON t.TrackId = il.TrackId GROUP BY g.Name ORDER BY TotalRevenue DESC LIMIT 5",
+      "error": null
+    },
+    {
+      "id": 7,
+      "difficulty": "medium",
+      "passed": true,
+      "sql": "SELECT date_part('year', InvoiceDate) AS Year, count(InvoiceId) AS InvoiceCount FROM Invoice GROUP BY 1",
+      "error": null
+    },
+    {
+      "id": 8,
+      "difficulty": "medium",
+      "passed": true,
+      "sql": "SELECT BillingCountry, AVG(Total) FROM Invoice GROUP BY BillingCountry HAVING COUNT(InvoiceId) >= 5",
+      "error": null
+    },
+    {
+      "id": 9,
+      "difficulty": "hard",
+      "passed": false,
+      "sql": "WITH CustomerSpending AS (\n    SELECT \n        c.Country, \n        c.FirstName || ' ' || c.LastName AS FullName, \n        SUM(i.Total) AS TotalSpent\n    FROM Customer c\n    JOIN Invoice i ON c.CustomerId = i.CustomerId\n    GROUP BY c.Country, FullName\n),\nRankedSpending AS (\n    SELECT \n        Country, \n        FullName, \n        TotalSpent,\n        RANK() OVER (PARTITION BY Country ORDER BY TotalSpent DESC) as rnk\n    FROM CustomerSpending\n)\nSELECT Country, FullName, TotalSpent\nFROM RankedSpending\nWHERE rnk = 1",
+      "error": null
+    },
+    {
+      "id": 10,
+      "difficulty": "hard",
+      "passed": false,
+      "sql": "SELECT Name FROM Artist WHERE ArtistId NOT IN (SELECT DISTINCT t.ArtistId FROM Track t JOIN InvoiceLine il ON t.TrackId = il.TrackId JOIN Album a ON t.AlbumId = a.AlbumId)",
+      "error": "Binder Error: Referenced table \"t\" not found!\nCandidate tables: \"Artist\""
+    }
+  ]
+}

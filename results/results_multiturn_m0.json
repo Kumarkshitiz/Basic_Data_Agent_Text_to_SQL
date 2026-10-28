@@ -1,0 +1,159 @@
+{
+  "scores_per_run": [
+    5,
+    5,
+    5
+  ],
+  "all_runs": [
+    [
+      {
+        "id": "M1",
+        "passed": true,
+        "status": "ok",
+        "last_turn": "and only for 2012?",
+        "standalone": "What are the top 5 billing countries by total revenue in 2012?",
+        "sql": "-- ASSUMPTION: top 5 = highest total revenue\nSELECT BillingCountry, ROUND(SUM(Total), 2) AS TotalRevenue\nFROM Invoice\nWHERE YEAR(InvoiceDate) = 2012\nGROUP BY BillingCountry\nORDER BY TotalRevenue DESC\nLIMIT 5"
+      },
+      {
+        "id": "M2",
+        "passed": true,
+        "status": "ok",
+        "last_turn": "what about Canada?",
+        "standalone": "How many customers are there in Canada?",
+        "sql": "SELECT count(*) FROM Customer WHERE Country = 'Canada'"
+      },
+      {
+        "id": "M3",
+        "passed": true,
+        "status": "ok",
+        "last_turn": "now only the top 3",
+        "standalone": "What are the top 3 genres by sales revenue?",
+        "sql": "-- ASSUMPTION: top = highest total sales revenue\nSELECT g.Name, ROUND(SUM(il.UnitPrice * il.Quantity), 2) AS Revenue\nFROM Genre g\nJOIN Track t ON g.GenreId = t.GenreId\nJOIN InvoiceLine il ON t.TrackId = il.TrackId\nGROUP BY g.GenreId, g.Name\nORDER BY Revenue DESC\nLIMIT 3"
+      },
+      {
+        "id": "M4",
+        "passed": false,
+        "status": "ok",
+        "last_turn": "which year was the highest?",
+        "standalone": "Which year had the highest total revenue?",
+        "sql": "-- ASSUMPTION: highest total revenue = year with the highest sum of Invoice.Total\nSELECT date_part('year', InvoiceDate) AS Year\nFROM Invoice\nGROUP BY Year\nORDER BY ROUND(SUM(Total), 2) DESC\nLIMIT 1"
+      },
+      {
+        "id": "M5",
+        "passed": true,
+        "status": "ok",
+        "last_turn": "How many customers are there?",
+        "standalone": "How many customers are there?",
+        "sql": "SELECT count(*) FROM Customer"
+      },
+      {
+        "id": "M6",
+        "passed": true,
+        "status": "ok",
+        "last_turn": "and in 2013?",
+        "standalone": "How many invoices were there in 2013?",
+        "sql": "SELECT count(*) FROM Invoice WHERE date_part('year', InvoiceDate) = 2013"
+      }
+    ],
+    [
+      {
+        "id": "M1",
+        "passed": true,
+        "status": "ok",
+        "last_turn": "and only for 2012?",
+        "standalone": "What are the top 5 billing countries by total revenue in 2012?",
+        "sql": "-- ASSUMPTION: top 5 = highest total revenue\nSELECT BillingCountry, ROUND(SUM(Total), 2) AS TotalRevenue\nFROM Invoice\nWHERE YEAR(InvoiceDate) = 2012\nGROUP BY BillingCountry\nORDER BY TotalRevenue DESC\nLIMIT 5"
+      },
+      {
+        "id": "M2",
+        "passed": true,
+        "status": "ok",
+        "last_turn": "what about Canada?",
+        "standalone": "How many customers are there in Canada?",
+        "sql": "SELECT count(*) FROM Customer WHERE Country = 'Canada'"
+      },
+      {
+        "id": "M3",
+        "passed": true,
+        "status": "ok",
+        "last_turn": "now only the top 3",
+        "standalone": "What are the top 3 genres by sales revenue?",
+        "sql": "-- ASSUMPTION: top = highest total sales revenue\nSELECT g.Name, ROUND(SUM(il.UnitPrice * il.Quantity), 2) AS Revenue\nFROM Genre g\nJOIN Track t ON g.GenreId = t.GenreId\nJOIN InvoiceLine il ON t.TrackId = il.TrackId\nGROUP BY g.GenreId, g.Name\nORDER BY Revenue DESC\nLIMIT 3"
+      },
+      {
+        "id": "M4",
+        "passed": false,
+        "status": "ok",
+        "last_turn": "which year was the highest?",
+        "standalone": "Which year had the highest total revenue?",
+        "sql": "-- ASSUMPTION: highest total revenue = year with the highest sum of Invoice.Total\nSELECT date_part('year', InvoiceDate) AS Year\nFROM Invoice\nGROUP BY Year\nORDER BY ROUND(SUM(Total), 2) DESC\nLIMIT 1"
+      },
+      {
+        "id": "M5",
+        "passed": true,
+        "status": "ok",
+        "last_turn": "How many customers are there?",
+        "standalone": "How many customers are there?",
+        "sql": "SELECT count(*) FROM Customer"
+      },
+      {
+        "id": "M6",
+        "passed": true,
+        "status": "ok",
+        "last_turn": "and in 2013?",
+        "standalone": "How many invoices were there in 2013?",
+        "sql": "SELECT count(*) FROM Invoice WHERE date_part('year', InvoiceDate) = 2013"
+      }
+    ],
+    [
+      {
+        "id": "M1",
+        "passed": true,
+        "status": "ok",
+        "last_turn": "and only for 2012?",
+        "standalone": "What are the top 5 billing countries by total revenue in 2012?",
+        "sql": "-- ASSUMPTION: top 5 = highest total revenue\nSELECT BillingCountry, ROUND(SUM(Total), 2) AS TotalRevenue\nFROM Invoice\nWHERE YEAR(InvoiceDate) = 2012\nGROUP BY BillingCountry\nORDER BY TotalRevenue DESC\nLIMIT 5"
+      },
+      {
+        "id": "M2",
+        "passed": true,
+        "status": "ok",
+        "last_turn": "what about Canada?",
+        "standalone": "How many customers are there in Canada?",
+        "sql": "SELECT count(*) FROM Customer WHERE Country = 'Canada'"
+      },
+      {
+        "id": "M3",
+        "passed": true,
+        "status": "ok",
+        "last_turn": "now only the top 3",
+        "standalone": "What are the top 3 genres by sales revenue?",
+        "sql": "-- ASSUMPTION: top = highest total sales revenue\nSELECT g.Name, ROUND(SUM(il.UnitPrice * il.Quantity), 2) AS Revenue\nFROM Genre g\nJOIN Track t ON g.GenreId = t.GenreId\nJOIN InvoiceLine il ON t.TrackId = il.TrackId\nGROUP BY g.GenreId, g.Name\nORDER BY Revenue DESC\nLIMIT 3"
+      },
+      {
+        "id": "M4",
+        "passed": false,
+        "status": "ok",
+        "last_turn": "which year was the highest?",
+        "standalone": "Which year had the highest total revenue?",
+        "sql": "-- ASSUMPTION: highest total revenue = year with the highest sum of Invoice.Total\nSELECT date_part('year', InvoiceDate) AS Year\nFROM Invoice\nGROUP BY Year\nORDER BY ROUND(SUM(Total), 2) DESC\nLIMIT 1"
+      },
+      {
+        "id": "M5",
+        "passed": true,
+        "status": "ok",
+        "last_turn": "How many customers are there?",
+        "standalone": "How many customers are there?",
+        "sql": "SELECT count(*) FROM Customer"
+      },
+      {
+        "id": "M6",
+        "passed": true,
+        "status": "ok",
+        "last_turn": "and in 2013?",
+        "standalone": "How many invoices were there in 2013?",
+        "sql": "SELECT count(*) FROM Invoice WHERE date_part('year', InvoiceDate) = 2013"
+      }
+    ]
+  ]
+}

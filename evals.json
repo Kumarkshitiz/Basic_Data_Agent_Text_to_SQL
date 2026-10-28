@@ -1,0 +1,152 @@
+[
+  {
+    "id": 1,
+    "difficulty": "easy",
+    "question": "How many customers are there?",
+    "gold_sql": "SELECT COUNT(*) AS customer_count FROM Customer"
+  },
+  {
+    "id": 2,
+    "difficulty": "easy",
+    "question": "How many tracks are in the Rock genre?",
+    "gold_sql": "SELECT COUNT(*) AS rock_tracks FROM Track t JOIN Genre g ON t.GenreId = g.GenreId WHERE g.Name = 'Rock'"
+  },
+  {
+    "id": 3,
+    "difficulty": "easy",
+    "question": "What is the total revenue across all invoices?",
+    "gold_sql": "SELECT ROUND(SUM(Total), 2) AS total_revenue FROM Invoice"
+  },
+  {
+    "id": 4,
+    "difficulty": "medium",
+    "question": "What are the top 5 billing countries by total revenue?",
+    "gold_sql": "SELECT BillingCountry, ROUND(SUM(Total), 2) AS revenue FROM Invoice GROUP BY BillingCountry ORDER BY revenue DESC LIMIT 5"
+  },
+  {
+    "id": 5,
+    "difficulty": "medium",
+    "question": "Which 3 artists have the most albums? Return the artist name and the number of albums.",
+    "gold_sql": "SELECT ar.Name, COUNT(*) AS album_count FROM Artist ar JOIN Album al ON ar.ArtistId = al.ArtistId GROUP BY ar.ArtistId, ar.Name ORDER BY album_count DESC LIMIT 3"
+  },
+  {
+    "id": 6,
+    "difficulty": "medium",
+    "question": "What are the top 5 genres by sales revenue?",
+    "gold_sql": "SELECT g.Name, ROUND(SUM(il.UnitPrice * il.Quantity), 2) AS revenue FROM InvoiceLine il JOIN Track t ON il.TrackId = t.TrackId JOIN Genre g ON t.GenreId = g.GenreId GROUP BY g.Name ORDER BY revenue DESC LIMIT 5"
+  },
+  {
+    "id": 7,
+    "difficulty": "medium",
+    "question": "How many invoices were there per year?",
+    "gold_sql": "SELECT year(InvoiceDate) AS yr, COUNT(*) AS invoice_count FROM Invoice GROUP BY yr ORDER BY yr"
+  },
+  {
+    "id": 8,
+    "difficulty": "medium",
+    "question": "What is the average invoice total per billing country, only for countries with at least 5 invoices?",
+    "gold_sql": "SELECT BillingCountry, ROUND(AVG(Total), 2) AS avg_total FROM Invoice GROUP BY BillingCountry HAVING COUNT(*) >= 5 ORDER BY avg_total DESC"
+  },
+  {
+    "id": 9,
+    "difficulty": "hard",
+    "question": "Who is the top-spending customer in each country? Return the country, the customer's full name as a single column (first and last name combined), and the total spent. If customers tie, include all of them.",
+    "gold_sql": "WITH spend AS (SELECT c.CustomerId, c.FirstName || ' ' || c.LastName AS customer, c.Country, ROUND(SUM(i.Total), 2) AS total_spent FROM Customer c JOIN Invoice i ON c.CustomerId = i.CustomerId GROUP BY c.CustomerId, c.FirstName, c.LastName, c.Country), ranked AS (SELECT *, RANK() OVER (PARTITION BY Country ORDER BY total_spent DESC) AS rnk FROM spend) SELECT Country, customer, total_spent FROM ranked WHERE rnk = 1 ORDER BY Country"
+  },
+  {
+    "id": 10,
+    "difficulty": "hard",
+    "question": "Which artists have no tracks that were ever purchased?",
+    "gold_sql": "SELECT ar.Name FROM Artist ar WHERE NOT EXISTS (SELECT 1 FROM Album al JOIN Track t ON t.AlbumId = al.AlbumId JOIN InvoiceLine il ON il.TrackId = t.TrackId WHERE al.ArtistId = ar.ArtistId) ORDER BY ar.Name"
+  },
+  {
+    "id": 11,
+    "difficulty": "easy",
+    "question": "How many invoices were issued in 2012?",
+    "gold_sql": "SELECT COUNT(*) AS invoice_count FROM Invoice WHERE year(InvoiceDate) = 2012"
+  },
+  {
+    "id": 12,
+    "difficulty": "easy",
+    "question": "What is the average track length in minutes, rounded to 2 decimals?",
+    "gold_sql": "SELECT ROUND(AVG(Milliseconds) / 60000.0, 2) AS avg_minutes FROM Track"
+  },
+  {
+    "id": 13,
+    "difficulty": "easy",
+    "question": "How many customers are there in each country? Return the country and the customer count.",
+    "gold_sql": "SELECT Country, COUNT(*) AS customer_count FROM Customer GROUP BY Country ORDER BY Country"
+  },
+  {
+    "id": 14,
+    "difficulty": "medium",
+    "question": "What was the total revenue in each month of 2012? Return the month number and the revenue.",
+    "gold_sql": "SELECT month(InvoiceDate) AS mth, ROUND(SUM(Total), 2) AS revenue FROM Invoice WHERE year(InvoiceDate) = 2012 GROUP BY 1 ORDER BY 1"
+  },
+  {
+    "id": 15,
+    "difficulty": "medium",
+    "question": "What percentage of total invoice revenue has a billing country of USA? Round to 2 decimals.",
+    "gold_sql": "SELECT ROUND(100.0 * SUM(CASE WHEN BillingCountry = 'USA' THEN Total ELSE 0 END) / SUM(Total), 2) AS usa_pct FROM Invoice"
+  },
+  {
+    "id": 16,
+    "difficulty": "medium",
+    "question": "How many tracks have never been purchased?",
+    "gold_sql": "SELECT COUNT(*) AS never_purchased FROM Track t WHERE NOT EXISTS (SELECT 1 FROM InvoiceLine il WHERE il.TrackId = t.TrackId)"
+  },
+  {
+    "id": 17,
+    "difficulty": "hard",
+    "question": "Which customers have spent more in total than the average customer? Return the customer's full name as a single column and their total spent.",
+    "gold_sql": "SELECT c.FirstName || ' ' || c.LastName AS customer, ROUND(SUM(i.Total), 2) AS total_spent FROM Customer c JOIN Invoice i ON c.CustomerId = i.CustomerId GROUP BY c.CustomerId, c.FirstName, c.LastName HAVING SUM(i.Total) > (SELECT AVG(s) FROM (SELECT SUM(Total) AS s FROM Invoice GROUP BY CustomerId))"
+  },
+  {
+    "id": 18,
+    "difficulty": "medium",
+    "question": "How many customers have more than 6 invoices?",
+    "gold_sql": "SELECT COUNT(*) AS customer_count FROM (SELECT CustomerId FROM Invoice GROUP BY CustomerId HAVING COUNT(*) > 6)"
+  },
+  {
+    "id": 19,
+    "difficulty": "medium",
+    "question": "Which genre has the longest average track length? Return the genre name and the average length in minutes, rounded to 2 decimals.",
+    "gold_sql": "SELECT g.Name AS genre, ROUND(AVG(t.Milliseconds) / 60000.0, 2) AS avg_minutes FROM Genre g JOIN Track t ON t.GenreId = g.GenreId GROUP BY g.GenreId, g.Name ORDER BY AVG(t.Milliseconds) DESC LIMIT 1"
+  },
+  {
+    "id": 20,
+    "difficulty": "hard",
+    "question": "Which customers have bought tracks from more than 5 different genres? Return the customer's full name as a single column and the number of distinct genres.",
+    "gold_sql": "SELECT c.FirstName || ' ' || c.LastName AS customer, COUNT(DISTINCT t.GenreId) AS genre_count FROM Customer c JOIN Invoice i ON i.CustomerId = c.CustomerId JOIN InvoiceLine il ON il.InvoiceId = i.InvoiceId JOIN Track t ON t.TrackId = il.TrackId GROUP BY c.CustomerId, c.FirstName, c.LastName HAVING COUNT(DISTINCT t.GenreId) > 5"
+  },
+  {
+    "id": 21,
+    "difficulty": "hard",
+    "question": "For 2011, show the revenue change versus the previous month for each month from February to December. Return the month number, that month's revenue, and the change.",
+    "gold_sql": "WITH m AS (SELECT month(InvoiceDate) AS mth, SUM(Total) AS rev FROM Invoice WHERE year(InvoiceDate) = 2011 GROUP BY 1), d AS (SELECT mth, rev, rev - LAG(rev) OVER (ORDER BY mth) AS diff FROM m) SELECT mth, ROUND(rev, 2) AS revenue, ROUND(diff, 2) AS change_amt FROM d WHERE diff IS NOT NULL ORDER BY mth"
+  },
+  {
+    "id": 22,
+    "difficulty": "hard",
+    "question": "Which artists have tracks in at least 3 different genres? Return the artist name and the number of distinct genres.",
+    "gold_sql": "SELECT ar.Name, COUNT(DISTINCT t.GenreId) AS genre_count FROM Artist ar JOIN Album al ON al.ArtistId = ar.ArtistId JOIN Track t ON t.AlbumId = al.AlbumId GROUP BY ar.ArtistId, ar.Name HAVING COUNT(DISTINCT t.GenreId) >= 3"
+  },
+  {
+    "id": 23,
+    "difficulty": "medium",
+    "question": "What percentage of total sales revenue does each genre represent? Use invoice line revenue (unit price times quantity). Return the genre name and the percentage rounded to 2 decimals.",
+    "gold_sql": "SELECT g.Name AS genre, ROUND(100.0 * SUM(il.UnitPrice * il.Quantity) / (SELECT SUM(UnitPrice * Quantity) FROM InvoiceLine), 2) AS pct FROM InvoiceLine il JOIN Track t ON il.TrackId = t.TrackId JOIN Genre g ON t.GenreId = g.GenreId GROUP BY g.GenreId, g.Name"
+  },
+  {
+    "id": 24,
+    "difficulty": "hard",
+    "question": "Which customers have never bought a track in the Latin genre? Return the customer's full name as a single column.",
+    "gold_sql": "SELECT c.FirstName || ' ' || c.LastName AS customer FROM Customer c WHERE NOT EXISTS (SELECT 1 FROM Invoice i JOIN InvoiceLine il ON il.InvoiceId = i.InvoiceId JOIN Track t ON t.TrackId = il.TrackId JOIN Genre g ON g.GenreId = t.GenreId WHERE i.CustomerId = c.CustomerId AND g.Name = 'Latin') ORDER BY customer"
+  },
+  {
+    "id": 25,
+    "difficulty": "hard",
+    "question": "For each customer, what was their most recent invoice? Return the customer's full name as a single column, the invoice date, and the invoice total. If a customer has several invoices on that latest date, include all of them.",
+    "gold_sql": "WITH r AS (SELECT c.FirstName || ' ' || c.LastName AS customer, i.InvoiceDate, i.Total, RANK() OVER (PARTITION BY c.CustomerId ORDER BY i.InvoiceDate DESC) AS rk FROM Customer c JOIN Invoice i ON i.CustomerId = c.CustomerId) SELECT customer, InvoiceDate, Total FROM r WHERE rk = 1"
+  }
+]

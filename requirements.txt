@@ -1,0 +1,6 @@
+duckdb
+pandas
+sqlglot
+streamlit
+google-genai
+python-dotenv
